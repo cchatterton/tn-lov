@@ -34,6 +34,9 @@ function tn_lov_enqueue_admin_assets(string $hook_suffix): void {
         array(
             'ajaxUrl'      => admin_url('admin-ajax.php'),
             'dismissNonce' => wp_create_nonce('tn_lov_dismiss_migration'),
+            'testNonce'    => wp_create_nonce('tn_lov_test_value'),
+            'enterKey'     => __('Enter a LOV key to test.', 'tn-lov'),
+            'requestFail'  => __('The value could not be tested.', 'tn-lov'),
         )
     );
 }

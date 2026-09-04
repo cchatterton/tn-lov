@@ -401,16 +401,16 @@
 .tn-lov-editor__footer .button-primary {
     min-height: 2.4rem;
     padding: 0 1.25rem;
-    color: var(--tn-lov-brand-dark);
-    border-color: #d95b00;
-    background: var(--tn-lov-brand);
+    color: #ffffff;
+    border-color: var(--tn-lov-brand-dark);
+    background: var(--tn-lov-brand-dark);
 }
 
 .tn-lov-editor__footer .button-primary:hover,
 .tn-lov-editor__footer .button-primary:focus {
     color: #ffffff;
-    border-color: var(--tn-lov-brand-dark);
-    background: var(--tn-lov-brand-dark);
+    border-color: #063b5d;
+    background: #063b5d;
 }
 
 #tn-lov-row-template {
@@ -418,11 +418,14 @@
 }
 
 .tn-lov-functions {
+    padding: 1.25rem 1.5rem;
+}
+
+.tn-lov-functions__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1.5rem;
-    padding: 1.25rem 1.5rem;
 }
 
 .tn-lov-functions h2 {
@@ -451,9 +454,53 @@
     font-size: 0.8rem;
 }
 
+.tn-lov-functions__test {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 0.0625rem solid var(--tn-lov-border);
+}
+
+.tn-lov-functions__test label {
+    display: block;
+    margin-bottom: 0.45rem;
+    color: var(--tn-lov-ink);
+    font-weight: 600;
+}
+
+.tn-lov-functions__test-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tn-lov-functions__test-controls input {
+    min-height: 2.4rem;
+    border-color: #b8c6cf;
+}
+
+.tn-lov-functions__test-controls input:focus {
+    border-color: #d95b00;
+    box-shadow: 0 0 0 0.0625rem #d95b00;
+}
+
+.tn-lov-functions__test-controls .button {
+    min-height: 2.4rem;
+    padding: 0 1rem;
+    color: var(--tn-lov-brand-dark);
+    border-color: var(--tn-lov-brand);
+    background: #ffffff;
+}
+
+.tn-lov-functions__test-controls .button:hover,
+.tn-lov-functions__test-controls .button:focus {
+    color: #ffffff;
+    border-color: var(--tn-lov-brand-dark);
+    background: var(--tn-lov-brand-dark);
+}
+
 @media screen and (max-width: 65rem) {
     .tn-lov-hero,
-    .tn-lov-functions {
+    .tn-lov-functions__header {
         align-items: flex-start;
         flex-direction: column;
     }
@@ -497,5 +544,15 @@
     .tn-lov-editor__header {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .tn-lov-functions__test-controls {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .tn-lov-functions__test-controls input,
+    .tn-lov-functions__test-controls .button {
+        width: 100%;
     }
 }

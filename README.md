@@ -2,7 +2,7 @@
 
 Author: Techn
 
-Version: 2.0.6
+Version: 2.0.7
 
 Status: Production
 
@@ -15,6 +15,8 @@ TN LOV provides a native WordPress editor for reusable key/value settings, optio
 Activate TN LOV while ACF Lov Table is still active. On first activation, TN LOV clones the complete legacy `lov_index` option into its independent `tn_lov_index` option. The legacy plugin remains the owner of the old option, and TN LOV writes only to the new option.
 
 While both plugins are active, ACF Lov Table continues to provide the legacy global functions. TN LOV waits until every plugin file has loaded and only registers functions that remain undefined, so coexistence is safe regardless of plugin load order. Confirm the copied values in Settings > TN LOV, then deactivate ACF Lov Table. On the following request, TN LOV provides the same public functions from its native data store.
+
+If Advanced Custom Fields is removed before ACF Lov Table, TN LOV temporarily bridges the old plugin's `get_field('lov', ...)` request to native TN LOV data. This prevents a fatal error while an administrator deactivates ACF Lov Table. The bridge activates only when the legacy plugin owns `get_lov()` and ACF's real `get_field()` function is unavailable.
 
 The activation import runs when `tn_lov_index` does not yet exist. It can also repair an empty index left by a migration attempt from an earlier release. Non-empty values already managed by TN LOV are not overwritten automatically.
 

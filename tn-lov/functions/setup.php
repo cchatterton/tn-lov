@@ -139,7 +139,7 @@ function tn_lov_get_legacy_source_for_current_site(): array {
  * @return array<string, array<string, array<string, string>>>
  */
 function tn_lov_read_legacy_acf_index(): array {
-    if (!function_exists('get_field')) {
+    if (!function_exists('get_field') || tn_lov_legacy_acf_bridge_active()) {
         return array();
     }
 

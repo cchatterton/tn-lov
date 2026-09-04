@@ -11,11 +11,12 @@ add_action('admin_menu', 'tn_lov_register_admin_page');
 add_action('admin_post_tn_lov_save_values', 'tn_lov_save_values');
 add_action('admin_post_tn_lov_import_legacy', 'tn_lov_import_legacy_values');
 add_action('wp_ajax_tn_lov_dismiss_migration', 'tn_lov_dismiss_migration');
+add_action('wp_ajax_tn_lov_test_value', 'tn_lov_test_value');
 
 function tn_lov_register_admin_page(): void {
     add_options_page(
-        __('List of Value', 'tn-lov'),
-        __('List of Value (LOV)', 'tn-lov'),
+        __('List of Values', 'tn-lov'),
+        __('List of Values (LOV)', 'tn-lov'),
         'manage_options',
         'tn-lov',
         'tn_lov_render_admin_page'
@@ -63,7 +64,7 @@ function tn_lov_render_admin_page(): void {
     $show_migration = $migration_status !== $dismissed_migration_status;
     ?>
     <div class="wrap tn-lov-admin">
-        <h1 class="screen-reader-text"><?php esc_html_e('List of Value', 'tn-lov'); ?></h1>
+        <h1 class="screen-reader-text"><?php esc_html_e('List of Values', 'tn-lov'); ?></h1>
 
         <?php if (null !== $saved_count) : ?>
             <div class="notice notice-success is-dismissible tn-lov-notice"><p>
@@ -96,7 +97,7 @@ function tn_lov_render_admin_page(): void {
         <header class="tn-lov-hero">
             <div>
                 <p class="tn-lov-eyebrow"><?php esc_html_e('Native WordPress settings', 'tn-lov'); ?></p>
-                <p class="tn-lov-hero__title" aria-hidden="true"><?php esc_html_e('List of Value', 'tn-lov'); ?></p>
+                <p class="tn-lov-hero__title" aria-hidden="true"><?php esc_html_e('List of Values', 'tn-lov'); ?></p>
                 <p class="tn-lov-lead">
                     <?php
                     echo $wpml_active
@@ -240,14 +241,29 @@ function tn_lov_render_admin_page(): void {
         </form>
 
         <section class="tn-lov-functions" aria-labelledby="tn-lov-functions-title">
-            <div>
-                <p class="tn-lov-kicker"><?php esc_html_e('Developer reference', 'tn-lov'); ?></p>
-                <h2 id="tn-lov-functions-title"><?php esc_html_e('Use values in code', 'tn-lov'); ?></h2>
-                <p><?php esc_html_e('Lookups use the current WPML language and fall back to the default language.', 'tn-lov'); ?></p>
+            <div class="tn-lov-functions__header">
+                <div>
+                    <p class="tn-lov-kicker"><?php esc_html_e('Developer reference', 'tn-lov'); ?></p>
+                    <h2 id="tn-lov-functions-title"><?php esc_html_e('Use values in code', 'tn-lov'); ?></h2>
+                    <p>
+                        <?php
+                        echo $wpml_active
+                            ? esc_html__('Lookups use the current WPML language and fall back to the default language.', 'tn-lov')
+                            : esc_html__('Retrieve native values by key or group.', 'tn-lov');
+                        ?>
+                    </p>
+                </div>
+                <div class="tn-lov-functions__examples">
+                    <code>get_lov('$key')</code>
+                    <code>get_lov_group('$group')</code>
+                </div>
             </div>
-            <div class="tn-lov-functions__examples">
-                <code>get_lov('$key')</code>
-                <code>get_lov_group('$group')</code>
+            <div class="tn-lov-functions__test">
+                <label for="tn-lov-test-key"><?php esc_html_e('Test a LOV key', 'tn-lov'); ?></label>
+                <div class="tn-lov-functions__test-controls">
+                    <input type="text" id="tn-lov-test-key" class="regular-text" placeholder="<?php esc_attr_e('e.g. copyright_message', 'tn-lov'); ?>">
+                    <button type="button" class="button" id="tn-lov-test-button"><?php esc_html_e('Test value', 'tn-lov'); ?></button>
+                </div>
             </div>
         </section>
 
@@ -382,6 +398,26 @@ function tn_lov_dismiss_migration(): void {
 
     update_user_meta(get_current_user_id(), 'tn_lov_dismissed_migration_status', $status);
     wp_send_json_success();
+}
+
+function tn_lov_test_value(): void {
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(array('message' => __('You are not allowed to test these values.', 'tn-lov')), 403);
+    }
+
+    check_ajax_referer('tn_lov_test_value', 'nonce');
+
+    $key = isset($_POST['key']) ? sanitize_text_field(wp_unslash($_POST['key'])) : '';
+    if ('' === $key) {
+        wp_send_json_error(array('message' => __('Enter a LOV key to test.', 'tn-lov')), 400);
+    }
+
+    $value = tn_lov_get($key);
+    if (null === $value) {
+        wp_send_json_error(array('message' => __('No matching value was found.', 'tn-lov')), 404);
+    }
+
+    wp_send_json_success(array('value' => $value));
 }
 
 /**

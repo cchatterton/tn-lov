@@ -3,7 +3,7 @@ Contributors: techn
 Tags: settings, options, values, wpml
 Requires at least: 6.0
 Tested up to: 7.1
-Stable tag: 2.0.6
+Stable tag: 2.0.7
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -24,7 +24,11 @@ The TN LOV screen visibly compares legacy and native record totals, language tot
 
 When the old normalized index is absent, TN LOV imports directly from the ACF repeater and collects available WPML languages before restoring the original language.
 
+If Advanced Custom Fields is removed before ACF Lov Table, TN LOV temporarily supplies the old plugin's LOV repeater calls from native data. Administrators are prompted to deactivate ACF Lov Table and complete the migration.
+
 The TN LOV screen includes a developer reference at the bottom with the supported public lookup functions.
+
+The developer reference also includes a protected key tester that displays the matching native value in a browser alert.
 
 When WPML is active, values are managed for the current language and lookups fall back to the WPML default language.
 
@@ -54,6 +58,16 @@ No. The legacy import only runs when TN LOV's own data option does not exist.
 
 == Changelog ==
 
+= 2.0.7 =
+
+* Prevented legacy get_lov() calls from failing if ACF is removed before ACF Lov Table.
+* Added a narrowly scoped bridge from the old LOV repeater call to native TN LOV data.
+* Added an administrator warning to deactivate the obsolete plugin.
+* Standardised page, hero, and menu naming to "List of Values".
+* Added a protected native LOV key tester to the developer reference.
+* Hides developer-reference WPML wording when WPML is inactive.
+* Updated the primary Save values action to navy with white text.
+
 = 2.0.6 =
 
 * Moved WordPress and third-party notices above the branded header.
@@ -61,14 +75,14 @@ No. The legacy import only runs when TN LOV's own data option does not exist.
 * Restores the panel automatically when its migration status changes.
 * Hides language-specific interface elements unless WPML is active on the current site.
 * Simplified the branded header eyebrow.
-* Renamed the page and hero title to "List of Value".
+* Renamed the page and hero title to "List of Values".
 
 = 2.0.5 =
 
 * Restored the developer reference to the bottom of the TN LOV screen and removed the Help tabs.
 * Aligned action icons with their button labels.
 * Updated the administration screen to the Techn navy-and-orange brand palette.
-* Renamed the Settings menu item to "List of Value (LOV)".
+* Renamed the Settings menu item to "List of Values (LOV)".
 
 = 2.0.4 =
 
@@ -100,6 +114,10 @@ No. The legacy import only runs when TN LOV's own data option does not exist.
 * Added WordPress-native updates from GitHub releases.
 
 == Upgrade Notice ==
+
+= 2.0.7 =
+
+Prevents a fatal error when Advanced Custom Fields is removed before the legacy ACF Lov Table plugin.
 
 = 2.0.6 =
 

@@ -19,6 +19,6 @@ The native screen shows whether the legacy and TN LOV indexes match, their recor
 
 If the legacy normalized index is missing, TN LOV reads the ACF repeater directly and collects its available WPML languages.
 
-Use the developer reference at the bottom of the TN LOV screen for the supported public lookup functions.
+Use the developer reference at the bottom of the TN LOV screen for the supported public lookup functions and a protected native-value tester.
 
 See the repository README for public API and release details.

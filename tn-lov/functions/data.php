@@ -104,7 +104,85 @@ function tn_lov_find_group(string $group, array $values): array {
     return $matches;
 }
 
+add_action('plugins_loaded', 'tn_lov_register_legacy_acf_bridge', 5);
 add_action('plugins_loaded', 'tn_lov_register_legacy_api');
+add_action('admin_notices', 'tn_lov_render_legacy_acf_bridge_notice');
+
+/**
+ * Keep the legacy plugin operational long enough for it to be deactivated.
+ *
+ * ACF Lov Table owns get_lov() while both plugins are active. If ACF itself is
+ * removed first, that function fatals when it calls get_field(). This narrowly
+ * scoped bridge exposes only the old `lov` repeater from TN LOV's native data.
+ */
+function tn_lov_register_legacy_acf_bridge(): void {
+    if (function_exists('get_field') || !tn_lov_legacy_plugin_owns_function('get_lov')) {
+        return;
+    }
+
+    if (!defined('TN_LOV_LEGACY_ACF_BRIDGE_ACTIVE')) {
+        define('TN_LOV_LEGACY_ACF_BRIDGE_ACTIVE', true);
+    }
+
+    function get_field($selector, $post_id = false, $format_value = true, $escape_html = false) {
+        unset($post_id, $format_value, $escape_html);
+
+        if ('lov' !== $selector) {
+            return false;
+        }
+
+        $rows = array();
+        foreach (tn_lov_get_data(false) as $key => $value) {
+            if (!is_array($value)) {
+                continue;
+            }
+
+            $rows[] = array(
+                'key'   => (string) $key,
+                'value' => $value['value'] ?? '',
+                'group' => $value['group'] ?? '',
+                'notes' => $value['notes'] ?? '',
+            );
+        }
+
+        return $rows;
+    }
+}
+
+function tn_lov_legacy_plugin_owns_function(string $function_name): bool {
+    if (!function_exists($function_name)) {
+        return false;
+    }
+
+    try {
+        $reflection = new ReflectionFunction($function_name);
+        $filename = $reflection->getFileName();
+    } catch (ReflectionException $exception) {
+        return false;
+    }
+
+    return is_string($filename)
+        && false !== strpos(wp_normalize_path($filename), '/acf-lov-table/');
+}
+
+function tn_lov_legacy_acf_bridge_active(): bool {
+    return defined('TN_LOV_LEGACY_ACF_BRIDGE_ACTIVE') && TN_LOV_LEGACY_ACF_BRIDGE_ACTIVE;
+}
+
+function tn_lov_render_legacy_acf_bridge_notice(): void {
+    if (!tn_lov_legacy_acf_bridge_active() || !current_user_can('activate_plugins')) {
+        return;
+    }
+    ?>
+    <div class="notice notice-warning">
+        <p>
+            <strong><?php esc_html_e('TN LOV prevented a legacy plugin error.', 'tn-lov'); ?></strong>
+            <?php esc_html_e('ACF Lov Table is still active but Advanced Custom Fields is unavailable. TN LOV is temporarily serving its LOV requests from native data. Deactivate ACF Lov Table to complete the migration.', 'tn-lov'); ?>
+            <a href="<?php echo esc_url(admin_url('plugins.php')); ?>"><?php esc_html_e('Open Plugins', 'tn-lov'); ?></a>
+        </p>
+    </div>
+    <?php
+}
 
 /**
  * Register the old public API after all plugin files have loaded.

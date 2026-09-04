@@ -2,6 +2,16 @@
 
 All notable changes to TN LOV are recorded here.
 
+## 2.0.7 - 2026-09-04
+
+- Prevents the legacy ACF Lov Table `get_lov()` function from fatally calling a missing `get_field()` after ACF is removed first.
+- Adds a narrowly scoped transition bridge that serves only the legacy `lov` repeater from TN LOV's native index.
+- Shows administrators a warning to deactivate ACF Lov Table and complete the migration.
+- Standardised the page, hero, and Settings menu labels to "List of Values".
+- Added a nonce-protected native LOV test input to the developer reference with alert-based results.
+- Hides the developer-reference WPML description when WPML is not active.
+- Updated the Save values button to navy with white text.
+
 ## 2.0.6 - 2026-09-04
 
 - Moved WordPress and third-party admin notices above the branded TN LOV header.
@@ -9,14 +19,14 @@ All notable changes to TN LOV are recorded here.
 - Makes the migration panel visible again automatically when its status changes.
 - Removed the Techn wordmark from the header eyebrow.
 - Hides WPML badges, metrics, and language wording when WPML is not active on the current site.
-- Renamed the page and hero title to "List of Value".
+- Renamed the page and hero title to "List of Values".
 
 ## 2.0.5 - 2026-09-04
 
 - Restored the developer reference to the bottom of the TN LOV screen and removed the contextual Help tabs.
 - Aligned the Add value and Re-import legacy values icons with their button labels.
 - Updated the administration screen to the Techn navy-and-orange brand palette.
-- Renamed the Settings menu item to "List of Value (LOV)".
+- Renamed the Settings menu item to "List of Values (LOV)".
 
 ## 2.0.4 - 2026-09-04
 
