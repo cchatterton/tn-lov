@@ -1,0 +1,43 @@
+.tn-lov-admin {
+    max-width: 90rem;
+}
+
+.tn-lov-table-wrap {
+    margin-top: 1rem;
+    overflow-x: auto;
+}
+
+.tn-lov-table input.regular-text {
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.tn-lov-table th,
+.tn-lov-table td {
+    vertical-align: middle;
+}
+
+.tn-lov-table th:nth-child(1),
+.tn-lov-table th:nth-child(2),
+.tn-lov-table th:nth-child(3) {
+    width: 20%;
+}
+
+.tn-lov-table .tn-lov-actions {
+    width: 4rem;
+    text-align: right;
+}
+
+.tn-lov-functions {
+    max-width: 40rem;
+    margin-top: 2rem;
+}
+
+.tn-lov-functions .inside {
+    margin: 0;
+    padding: 1rem;
+}
+
+#tn-lov-row-template {
+    display: none;
+}
