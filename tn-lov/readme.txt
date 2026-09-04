@@ -3,7 +3,7 @@ Contributors: techn
 Tags: settings, options, values, wpml
 Requires at least: 6.0
 Tested up to: 7.1
-Stable tag: 2.0.1
+Stable tag: 2.0.2
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -14,7 +14,7 @@ Manage reusable key/value settings natively, with optional grouping, notes, and 
 
 TN LOV provides a native WordPress editor for reusable values without requiring Advanced Custom Fields. Values may include a key, value, group, and administrative notes.
 
-The existing get_lov() and get_lov_group() functions remain available after the legacy ACF Lov Table plugin is deactivated. When both plugins are active, TN LOV does not redeclare global functions already provided by the legacy plugin.
+The existing get_lov() and get_lov_group() functions remain available after the legacy ACF Lov Table plugin is deactivated. When both plugins are active, TN LOV waits until all plugin files have loaded and does not redeclare global functions already provided by the legacy plugin.
 
 On first activation, TN LOV clones the existing legacy lov_index option into its own independent storage. Review the copied values under Settings > TN LOV before deactivating the legacy plugin.
 
@@ -48,6 +48,11 @@ No. The legacy import only runs when TN LOV's own data option does not exist.
 
 == Changelog ==
 
+= 2.0.2 =
+
+* Fixed fatal function conflicts when TN LOV loads before ACF Lov Table.
+* Made legacy-plugin coexistence independent of plugin load order.
+
 = 2.0.1 =
 
 * Added safe, batched migration of every existing site during multisite network activation.
@@ -61,6 +66,10 @@ No. The legacy import only runs when TN LOV's own data option does not exist.
 * Added WordPress-native updates from GitHub releases.
 
 == Upgrade Notice ==
+
+= 2.0.2 =
+
+Fixes activation alongside ACF Lov Table when TN LOV is earlier in the plugin load order.
 
 = 2.0.1 =
 

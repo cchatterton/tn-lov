@@ -104,27 +104,36 @@ function tn_lov_find_group(string $group, array $values): array {
     return $matches;
 }
 
-// Backward-compatible API retained from ACF Lov Table.
-if (!function_exists('is_wpml_active')) {
-    function is_wpml_active(): bool {
-        return tn_lov_is_wpml_active();
-    }
-}
+add_action('plugins_loaded', 'tn_lov_register_legacy_api');
 
-if (!function_exists('get_lov_data')) {
-    function get_lov_data($use_default_language = false): array {
-        return tn_lov_get_data((bool) $use_default_language);
+/**
+ * Register the old public API after all plugin files have loaded.
+ *
+ * Waiting until plugins_loaded prevents a fatal redeclaration when the legacy
+ * plugin loads after TN LOV and declares the same functions unconditionally.
+ */
+function tn_lov_register_legacy_api(): void {
+    if (!function_exists('is_wpml_active')) {
+        function is_wpml_active(): bool {
+            return tn_lov_is_wpml_active();
+        }
     }
-}
 
-if (!function_exists('get_lov')) {
-    function get_lov($key) {
-        return tn_lov_get((string) $key);
+    if (!function_exists('get_lov_data')) {
+        function get_lov_data($use_default_language = false): array {
+            return tn_lov_get_data((bool) $use_default_language);
+        }
     }
-}
 
-if (!function_exists('get_lov_group')) {
-    function get_lov_group($group): ?array {
-        return tn_lov_get_group((string) $group);
+    if (!function_exists('get_lov')) {
+        function get_lov($key) {
+            return tn_lov_get((string) $key);
+        }
+    }
+
+    if (!function_exists('get_lov_group')) {
+        function get_lov_group($group): ?array {
+            return tn_lov_get_group((string) $group);
+        }
     }
 }

@@ -2,6 +2,11 @@
 
 All notable changes to TN LOV are recorded here.
 
+## 2.0.2 - 2026-09-04
+
+- Fixed a fatal function redeclaration when TN LOV loaded before ACF Lov Table.
+- Deferred the backward-compatible global API until all plugin files have loaded, making coexistence independent of plugin load order.
+
 ## 2.0.1 - 2026-09-04
 
 - Added multisite-aware network activation that clones legacy LOV data for every existing site.

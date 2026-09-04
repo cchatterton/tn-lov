@@ -1,4 +1,4 @@
 {
-  "version": "2.0.1",
-  "body": "Adds multisite-aware network activation that clones each site's legacy LOV values into independent TN LOV storage without overwriting existing TN LOV data."
+  "version": "2.0.2",
+  "body": "Fixes legacy-plugin coexistence by registering compatibility functions only after all plugin files have loaded, preventing function redeclaration regardless of plugin load order."
 }
