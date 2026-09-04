@@ -13,5 +13,6 @@ TN LOV provides a native WordPress editor for reusable key/value settings with o
 
 Activate TN LOV while ACF Lov Table is active. TN LOV clones the legacy data once into its own option and avoids redeclaring the legacy plugin's global functions. After confirming the values under Settings > TN LOV, deactivate ACF Lov Table.
 
-See the repository README for public API and release details.
+On multisite, network activation clones each existing site's data. Any site that already has TN LOV data is left unchanged.
 
+See the repository README for public API and release details.

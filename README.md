@@ -1,7 +1,9 @@
 # TN LOV
 
-Author: Techn  
-Version: 2.0.0  
+Author: Techn
+
+Version: 2.0.1
+
 Status: Production
 
 ## Purpose
@@ -15,6 +17,8 @@ Activate TN LOV while ACF Lov Table is still active. On first activation, TN LOV
 While both plugins are active, ACF Lov Table continues to provide the legacy global functions because TN LOV will not redeclare an existing function. Confirm the copied values in Settings > TN LOV, then deactivate ACF Lov Table. On the following request, TN LOV provides the same public functions from its native data store.
 
 The activation import runs only when `tn_lov_index` does not yet exist. Re-activating TN LOV does not overwrite values already managed by TN LOV.
+
+On multisite, network activation processes sites in batches and performs the same non-destructive clone within each site's own options table. Individual site activation clones only that site.
 
 ## Public API
 
@@ -37,4 +41,3 @@ Values are stored in the autoload-disabled `tn_lov_index` WordPress option. The 
 ## Releases
 
 Run `scripts/build-plugin-zip.sh` from the repository root. The release asset must be named `tn-lov.zip` and the Git tag must match the plugin version with a leading `v`.
-

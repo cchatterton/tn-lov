@@ -1,5 +1,4 @@
 {
-  "version": "2.0.0",
-  "body": "Replaces the ACF-dependent editor with a native WordPress LOV editor, clones legacy values on first activation, and preserves the existing lookup API and WPML fallback behavior."
+  "version": "2.0.1",
+  "body": "Adds multisite-aware network activation that clones each site's legacy LOV values into independent TN LOV storage without overwriting existing TN LOV data."
 }
-
