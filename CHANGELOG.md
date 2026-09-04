@@ -9,6 +9,7 @@ All notable changes to TN LOV are recorded here.
 - Makes the migration panel visible again automatically when its status changes.
 - Removed the Techn wordmark from the header eyebrow.
 - Hides WPML badges, metrics, and language wording when WPML is not active on the current site.
+- Renamed the page and hero title to "List of Value".
 
 ## 2.0.5 - 2026-09-04
 

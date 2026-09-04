@@ -14,7 +14,7 @@ add_action('wp_ajax_tn_lov_dismiss_migration', 'tn_lov_dismiss_migration');
 
 function tn_lov_register_admin_page(): void {
     add_options_page(
-        __('List of Values', 'tn-lov'),
+        __('List of Value', 'tn-lov'),
         __('List of Value (LOV)', 'tn-lov'),
         'manage_options',
         'tn-lov',
@@ -63,7 +63,7 @@ function tn_lov_render_admin_page(): void {
     $show_migration = $migration_status !== $dismissed_migration_status;
     ?>
     <div class="wrap tn-lov-admin">
-        <h1 class="screen-reader-text"><?php esc_html_e('TN LOV', 'tn-lov'); ?></h1>
+        <h1 class="screen-reader-text"><?php esc_html_e('List of Value', 'tn-lov'); ?></h1>
 
         <?php if (null !== $saved_count) : ?>
             <div class="notice notice-success is-dismissible tn-lov-notice"><p>
@@ -96,7 +96,7 @@ function tn_lov_render_admin_page(): void {
         <header class="tn-lov-hero">
             <div>
                 <p class="tn-lov-eyebrow"><?php esc_html_e('Native WordPress settings', 'tn-lov'); ?></p>
-                <p class="tn-lov-hero__title" aria-hidden="true"><?php esc_html_e('TN LOV', 'tn-lov'); ?></p>
+                <p class="tn-lov-hero__title" aria-hidden="true"><?php esc_html_e('List of Value', 'tn-lov'); ?></p>
                 <p class="tn-lov-lead">
                     <?php
                     echo $wpml_active

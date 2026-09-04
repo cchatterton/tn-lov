@@ -61,6 +61,7 @@ No. The legacy import only runs when TN LOV's own data option does not exist.
 * Restores the panel automatically when its migration status changes.
 * Hides language-specific interface elements unless WPML is active on the current site.
 * Simplified the branded header eyebrow.
+* Renamed the page and hero title to "List of Value".
 
 = 2.0.5 =
 
