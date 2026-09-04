@@ -3,7 +3,7 @@ Contributors: techn
 Tags: settings, options, values, wpml
 Requires at least: 6.0
 Tested up to: 7.1
-Stable tag: 2.0.2
+Stable tag: 2.0.3
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -19,6 +19,8 @@ The existing get_lov() and get_lov_group() functions remain available after the 
 On first activation, TN LOV clones the existing legacy lov_index option into its own independent storage. Review the copied values under Settings > TN LOV before deactivating the legacy plugin.
 
 On multisite, network activation clones the legacy values for every existing site. Existing TN LOV values are preserved independently on each site.
+
+The TN LOV screen visibly compares legacy and native record totals, language totals, and exact index contents. A protected manual re-import is available while legacy data remains present.
 
 When WPML is active, values are managed for the current language and lookups fall back to the WPML default language.
 
@@ -48,6 +50,12 @@ No. The legacy import only runs when TN LOV's own data option does not exist.
 
 == Changelog ==
 
+= 2.0.3 =
+
+* Repaired empty native indexes left by earlier migration attempts.
+* Added visible migration verification and manual legacy re-import.
+* Added a polished, responsive TN LOV administration interface.
+
 = 2.0.2 =
 
 * Fixed fatal function conflicts when TN LOV loads before ACF Lov Table.
@@ -66,6 +74,10 @@ No. The legacy import only runs when TN LOV's own data option does not exist.
 * Added WordPress-native updates from GitHub releases.
 
 == Upgrade Notice ==
+
+= 2.0.3 =
+
+Repairs missing legacy data and adds visible migration verification under Settings > TN LOV.
 
 = 2.0.2 =
 

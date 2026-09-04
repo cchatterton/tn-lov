@@ -2,6 +2,13 @@
 
 All notable changes to TN LOV are recorded here.
 
+## 2.0.3 - 2026-09-04
+
+- Added a self-healing migration that repairs empty TN LOV indexes left by earlier activation attempts.
+- Added a visible migration status panel comparing legacy and TN LOV totals and exact index contents.
+- Added a nonce-protected manual legacy re-import for all languages.
+- Redesigned the administration screen with a polished responsive interface and clearer editing controls.
+
 ## 2.0.2 - 2026-09-04
 
 - Fixed a fatal function redeclaration when TN LOV loaded before ACF Lov Table.

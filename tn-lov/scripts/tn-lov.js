@@ -25,4 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         removeButton.closest('tr')?.remove();
     });
+
+    document.querySelectorAll('.tn-lov-import[data-confirm-import]').forEach((form) => {
+        form.addEventListener('submit', (event) => {
+            if (!window.confirm(form.dataset.confirmImport)) {
+                event.preventDefault();
+            }
+        });
+    });
 });

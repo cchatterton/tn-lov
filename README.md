@@ -2,7 +2,7 @@
 
 Author: Techn
 
-Version: 2.0.2
+Version: 2.0.3
 
 Status: Production
 
@@ -16,9 +16,11 @@ Activate TN LOV while ACF Lov Table is still active. On first activation, TN LOV
 
 While both plugins are active, ACF Lov Table continues to provide the legacy global functions. TN LOV waits until every plugin file has loaded and only registers functions that remain undefined, so coexistence is safe regardless of plugin load order. Confirm the copied values in Settings > TN LOV, then deactivate ACF Lov Table. On the following request, TN LOV provides the same public functions from its native data store.
 
-The activation import runs only when `tn_lov_index` does not yet exist. Re-activating TN LOV does not overwrite values already managed by TN LOV.
+The activation import runs when `tn_lov_index` does not yet exist. It can also repair an empty index left by a migration attempt from an earlier release. Non-empty values already managed by TN LOV are not overwritten automatically.
 
 On multisite, network activation processes sites in batches and performs the same non-destructive clone within each site's own options table. Individual site activation clones only that site.
+
+TN LOV 2.0.3 automatically repairs an empty native index left by an earlier migration attempt when legacy values are available. Settings > TN LOV shows legacy and native totals, the number of languages detected, and whether both indexes match exactly. Administrators can also perform a fresh nonce-protected import from the legacy index; this replaces TN LOV data but never changes the legacy source.
 
 ## Public API
 

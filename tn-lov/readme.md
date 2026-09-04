@@ -15,4 +15,6 @@ Activate TN LOV while ACF Lov Table is active. TN LOV clones the legacy data onc
 
 On multisite, network activation clones each existing site's data. Any site that already has TN LOV data is left unchanged.
 
+The native screen shows whether the legacy and TN LOV indexes match, their record and language totals, and a protected action to import the legacy index again when required.
+
 See the repository README for public API and release details.

@@ -1,4 +1,4 @@
 {
-  "version": "2.0.2",
-  "body": "Fixes legacy-plugin coexistence by registering compatibility functions only after all plugin files have loaded, preventing function redeclaration regardless of plugin load order."
+  "version": "2.0.3",
+  "body": "Repairs empty migrations from earlier releases, adds visible legacy-versus-native migration verification and manual re-import, and introduces a polished TN LOV administration experience."
 }

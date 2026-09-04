@@ -9,6 +9,7 @@ if (!defined('ABSPATH')) {
 
 add_action('admin_menu', 'tn_lov_register_admin_page');
 add_action('admin_post_tn_lov_save_values', 'tn_lov_save_values');
+add_action('admin_post_tn_lov_import_legacy', 'tn_lov_import_legacy_values');
 
 function tn_lov_register_admin_page(): void {
     add_options_page(
@@ -27,13 +28,50 @@ function tn_lov_render_admin_page(): void {
 
     $language = tn_lov_current_language();
     $values = tn_lov_get_data(false);
+    $legacy_index = get_option('lov_index', false);
+    $native_index = get_option('tn_lov_index', array());
+    $legacy_count = tn_lov_count_index_values($legacy_index);
+    $native_count = tn_lov_count_index_values($native_index);
+    $legacy_languages = is_array($legacy_index) ? count(array_filter($legacy_index, 'is_array')) : 0;
+    $indexes_match = is_array($legacy_index) && tn_lov_indexes_match($legacy_index, $native_index);
     $saved_count = isset($_GET['tn_lov_saved']) ? absint($_GET['tn_lov_saved']) : null;
+    $imported_count = isset($_GET['tn_lov_imported']) ? absint($_GET['tn_lov_imported']) : null;
+    $import_failed = isset($_GET['tn_lov_import_failed']);
+
+    if (!is_array($legacy_index)) {
+        $migration_status = 'unavailable';
+        $migration_label = __('No legacy source detected', 'tn-lov');
+        $migration_message = __('TN LOV is ready to manage values independently.', 'tn-lov');
+    } elseif ($indexes_match) {
+        $migration_status = 'matched';
+        $migration_label = __('Migration verified', 'tn-lov');
+        $migration_message = __('The legacy and TN LOV indexes are an exact match.', 'tn-lov');
+    } elseif (0 === $native_count && $legacy_count > 0) {
+        $migration_status = 'pending';
+        $migration_label = __('Import required', 'tn-lov');
+        $migration_message = __('Legacy values were found, but TN LOV is currently empty.', 'tn-lov');
+    } else {
+        $migration_status = 'different';
+        $migration_label = __('Indexes differ', 'tn-lov');
+        $migration_message = __('Both indexes contain data, but their contents are not identical.', 'tn-lov');
+    }
     ?>
     <div class="wrap tn-lov-admin">
-        <h1><?php esc_html_e('List of Values', 'tn-lov'); ?></h1>
+        <header class="tn-lov-hero">
+            <div>
+                <p class="tn-lov-eyebrow"><?php esc_html_e('Techn · Native WordPress settings', 'tn-lov'); ?></p>
+                <h1><?php esc_html_e('TN LOV', 'tn-lov'); ?></h1>
+                <p class="tn-lov-lead"><?php esc_html_e('A dependable home for reusable site values—native, lightweight, and language-aware.', 'tn-lov'); ?></p>
+            </div>
+            <div class="tn-lov-badges" aria-label="<?php esc_attr_e('Plugin capabilities', 'tn-lov'); ?>">
+                <span><?php esc_html_e('ACF-free', 'tn-lov'); ?></span>
+                <span><?php esc_html_e('WPML-ready', 'tn-lov'); ?></span>
+                <span><?php esc_html_e('Multisite-ready', 'tn-lov'); ?></span>
+            </div>
+        </header>
 
         <?php if (null !== $saved_count) : ?>
-            <div class="notice notice-success is-dismissible"><p>
+            <div class="notice notice-success is-dismissible tn-lov-notice"><p>
                 <?php
                 /* translators: %s: Number of saved LOV entries. */
                 printf(
@@ -44,21 +82,84 @@ function tn_lov_render_admin_page(): void {
             </p></div>
         <?php endif; ?>
 
-        <?php if (tn_lov_is_wpml_active()) : ?>
-            <p class="description">
-                <?php esc_html_e('Editing values for language:', 'tn-lov'); ?>
-                <strong><?php echo esc_html(strtoupper($language)); ?></strong>.
-                <?php esc_html_e('Empty lookups fall back to the WPML default language.', 'tn-lov'); ?>
-            </p>
+        <?php if (null !== $imported_count) : ?>
+            <div class="notice notice-success is-dismissible tn-lov-notice"><p>
+                <?php
+                /* translators: %s: Number of imported LOV entries. */
+                printf(
+                    esc_html(_n('%s legacy value imported.', '%s legacy values imported.', $imported_count, 'tn-lov')),
+                    esc_html(number_format_i18n($imported_count))
+                );
+                ?>
+            </p></div>
         <?php endif; ?>
 
-        <form action="<?php echo esc_url(admin_url('admin-post.php')); ?>" method="post">
+        <?php if ($import_failed) : ?>
+            <div class="notice notice-error is-dismissible tn-lov-notice"><p><?php esc_html_e('No legacy LOV index was available to import.', 'tn-lov'); ?></p></div>
+        <?php endif; ?>
+
+        <section class="tn-lov-migration tn-lov-migration--<?php echo esc_attr($migration_status); ?>" aria-labelledby="tn-lov-migration-title">
+            <div class="tn-lov-migration__summary">
+                <span class="dashicons <?php echo 'matched' === $migration_status ? 'dashicons-yes-alt' : 'dashicons-database'; ?>" aria-hidden="true"></span>
+                <div>
+                    <p class="tn-lov-kicker"><?php esc_html_e('Legacy migration', 'tn-lov'); ?></p>
+                    <h2 id="tn-lov-migration-title"><?php echo esc_html($migration_label); ?></h2>
+                    <p><?php echo esc_html($migration_message); ?></p>
+                </div>
+            </div>
+
+            <div class="tn-lov-migration__metrics">
+                <div><strong><?php echo esc_html(number_format_i18n($legacy_count)); ?></strong><span><?php esc_html_e('Legacy values', 'tn-lov'); ?></span></div>
+                <div><strong><?php echo esc_html(number_format_i18n($native_count)); ?></strong><span><?php esc_html_e('TN LOV values', 'tn-lov'); ?></span></div>
+                <div><strong><?php echo esc_html(number_format_i18n($legacy_languages)); ?></strong><span><?php esc_html_e('Languages found', 'tn-lov'); ?></span></div>
+            </div>
+
+            <?php if (is_array($legacy_index) && $legacy_count > 0) : ?>
+                <form class="tn-lov-import" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" method="post" data-confirm-import="<?php esc_attr_e('Replace all TN LOV values with a fresh copy of the legacy index?', 'tn-lov'); ?>">
+                    <input type="hidden" name="action" value="tn_lov_import_legacy">
+                    <?php wp_nonce_field('tn_lov_import_legacy', 'tn_lov_import_nonce'); ?>
+                    <button type="submit" class="button button-secondary">
+                        <span class="dashicons dashicons-migrate" aria-hidden="true"></span>
+                        <?php echo $indexes_match ? esc_html__('Re-import legacy values', 'tn-lov') : esc_html__('Import legacy values now', 'tn-lov'); ?>
+                    </button>
+                    <p><?php esc_html_e('This copies every language and replaces the current TN LOV index. The legacy index is never changed.', 'tn-lov'); ?></p>
+                </form>
+            <?php endif; ?>
+        </section>
+
+        <?php if (tn_lov_is_wpml_active()) : ?>
+            <div class="tn-lov-language">
+                <span class="dashicons dashicons-translation" aria-hidden="true"></span>
+                <span><?php esc_html_e('Editing language', 'tn-lov'); ?></span>
+                <strong><?php echo esc_html(strtoupper($language)); ?></strong>
+                <span><?php esc_html_e('with default-language fallback', 'tn-lov'); ?></span>
+            </div>
+        <?php endif; ?>
+
+        <form class="tn-lov-editor" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" method="post">
             <input type="hidden" name="action" value="tn_lov_save_values">
             <input type="hidden" name="tn_lov_language" value="<?php echo esc_attr($language); ?>">
             <?php wp_nonce_field('tn_lov_save_values', 'tn_lov_nonce'); ?>
 
+            <div class="tn-lov-editor__header">
+                <div>
+                    <p class="tn-lov-kicker"><?php esc_html_e('Value library', 'tn-lov'); ?></p>
+                    <h2><?php esc_html_e('Reusable values', 'tn-lov'); ?></h2>
+                    <p><?php esc_html_e('Use clear, stable keys. Groups make related values easy to retrieve together.', 'tn-lov'); ?></p>
+                </div>
+                <span class="tn-lov-count">
+                    <?php
+                    printf(
+                        /* translators: %s: Number of values in the current language. */
+                        esc_html__('%s in this language', 'tn-lov'),
+                        esc_html(number_format_i18n(count($values)))
+                    );
+                    ?>
+                </span>
+            </div>
+
             <div class="tn-lov-table-wrap">
-                <table class="widefat striped tn-lov-table">
+                <table class="tn-lov-table">
                     <thead>
                         <tr>
                             <th scope="col"><?php esc_html_e('Key', 'tn-lov'); ?> <span aria-hidden="true">*</span></th>
@@ -85,17 +186,23 @@ function tn_lov_render_admin_page(): void {
                 </table>
             </div>
 
-            <p>
-                <button type="button" class="button" id="tn-lov-add-row"><?php esc_html_e('Add row', 'tn-lov'); ?></button>
-            </p>
-
-            <?php submit_button(__('Save values', 'tn-lov')); ?>
+            <div class="tn-lov-editor__footer">
+                <button type="button" class="button button-secondary" id="tn-lov-add-row">
+                    <span class="dashicons dashicons-plus-alt2" aria-hidden="true"></span>
+                    <?php esc_html_e('Add value', 'tn-lov'); ?>
+                </button>
+                <?php submit_button(__('Save values', 'tn-lov'), 'primary', 'submit', false); ?>
+            </div>
         </form>
 
-        <div class="postbox tn-lov-functions">
-            <div class="postbox-header"><h2><?php esc_html_e('Related functions', 'tn-lov'); ?></h2></div>
-            <div class="inside"><code>get_lov('$key')</code> &nbsp; <code>get_lov_group('$group')</code></div>
-        </div>
+        <section class="tn-lov-functions" aria-labelledby="tn-lov-functions-title">
+            <div>
+                <p class="tn-lov-kicker"><?php esc_html_e('Developer reference', 'tn-lov'); ?></p>
+                <h2 id="tn-lov-functions-title"><?php esc_html_e('Use values in code', 'tn-lov'); ?></h2>
+            </div>
+            <code>get_lov('$key')</code>
+            <code>get_lov_group('$group')</code>
+        </section>
 
         <script type="text/template" id="tn-lov-row-template">
             <?php tn_lov_render_row('__INDEX__', '', array()); ?>
@@ -126,7 +233,10 @@ function tn_lov_render_row($index, string $key, array $value): void {
             <input class="regular-text" type="text" name="<?php echo esc_attr($name_prefix . '[notes]'); ?>" value="<?php echo esc_attr((string) ($value['notes'] ?? '')); ?>">
         </td>
         <td class="tn-lov-actions">
-            <button type="button" class="button-link-delete tn-lov-remove-row"><?php esc_html_e('Remove', 'tn-lov'); ?></button>
+            <button type="button" class="tn-lov-remove-row" aria-label="<?php esc_attr_e('Remove value', 'tn-lov'); ?>">
+                <span class="dashicons dashicons-trash" aria-hidden="true"></span>
+                <span class="screen-reader-text"><?php esc_html_e('Remove', 'tn-lov'); ?></span>
+            </button>
         </td>
     </tr>
     <?php
@@ -170,6 +280,7 @@ function tn_lov_save_values(): void {
     $index = is_array($index) ? $index : array();
     $index[$language] = $values;
     update_option('tn_lov_index', $index, false);
+    update_option('tn_lov_migration_version', TN_LOV_MIGRATION_VERSION, false);
 
     $redirect_args = array(
         'page'         => 'tn-lov',
@@ -183,4 +294,55 @@ function tn_lov_save_values(): void {
 
     wp_safe_redirect($redirect_url);
     exit;
+}
+
+function tn_lov_import_legacy_values(): void {
+    if (!current_user_can('manage_options')) {
+        wp_die(esc_html__('You are not allowed to import these values.', 'tn-lov'));
+    }
+
+    check_admin_referer('tn_lov_import_legacy', 'tn_lov_import_nonce');
+
+    $legacy_index = get_option('lov_index', false);
+    $redirect_args = array('page' => 'tn-lov');
+
+    if (!is_array($legacy_index)) {
+        $redirect_args['tn_lov_import_failed'] = '1';
+    } else {
+        update_option('tn_lov_index', $legacy_index, false);
+        update_option('tn_lov_migration_version', TN_LOV_MIGRATION_VERSION, false);
+        $redirect_args['tn_lov_imported'] = tn_lov_count_index_values($legacy_index);
+    }
+
+    wp_safe_redirect(add_query_arg($redirect_args, admin_url('options-general.php')));
+    exit;
+}
+
+/**
+ * @param mixed $first_index First LOV index.
+ * @param mixed $second_index Second LOV index.
+ */
+function tn_lov_indexes_match($first_index, $second_index): bool {
+    if (!is_array($first_index) || !is_array($second_index)) {
+        return false;
+    }
+
+    return tn_lov_sort_index($first_index) === tn_lov_sort_index($second_index);
+}
+
+/**
+ * @param array<mixed> $index LOV index.
+ * @return array<mixed>
+ */
+function tn_lov_sort_index(array $index): array {
+    ksort($index);
+
+    foreach ($index as &$value) {
+        if (is_array($value)) {
+            $value = tn_lov_sort_index($value);
+        }
+    }
+    unset($value);
+
+    return $index;
 }
