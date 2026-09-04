@@ -10,6 +10,7 @@ if (!defined('ABSPATH')) {
 add_action('admin_menu', 'tn_lov_register_admin_page');
 add_action('admin_post_tn_lov_save_values', 'tn_lov_save_values');
 add_action('admin_post_tn_lov_import_legacy', 'tn_lov_import_legacy_values');
+add_action('wp_ajax_tn_lov_dismiss_migration', 'tn_lov_dismiss_migration');
 
 function tn_lov_register_admin_page(): void {
     add_options_page(
@@ -33,6 +34,7 @@ function tn_lov_render_admin_page(): void {
     $native_index = get_option('tn_lov_index', array());
     $legacy_count = tn_lov_count_index_values($legacy_index);
     $native_count = tn_lov_count_index_values($native_index);
+    $wpml_active = tn_lov_is_wpml_active();
     $legacy_languages = is_array($legacy_index) ? count(array_filter($legacy_index, 'is_array')) : 0;
     $indexes_match = is_array($legacy_index) && tn_lov_indexes_match($legacy_index, $native_index);
     $saved_count = isset($_GET['tn_lov_saved']) ? absint($_GET['tn_lov_saved']) : null;
@@ -56,20 +58,12 @@ function tn_lov_render_admin_page(): void {
         $migration_label = __('Indexes differ', 'tn-lov');
         $migration_message = __('Both indexes contain data, but their contents are not identical.', 'tn-lov');
     }
+
+    $dismissed_migration_status = get_user_meta(get_current_user_id(), 'tn_lov_dismissed_migration_status', true);
+    $show_migration = $migration_status !== $dismissed_migration_status;
     ?>
     <div class="wrap tn-lov-admin">
-        <header class="tn-lov-hero">
-            <div>
-                <p class="tn-lov-eyebrow"><?php esc_html_e('Techn · Native WordPress settings', 'tn-lov'); ?></p>
-                <h1><?php esc_html_e('TN LOV', 'tn-lov'); ?></h1>
-                <p class="tn-lov-lead"><?php esc_html_e('A dependable home for reusable site values—native, lightweight, and language-aware.', 'tn-lov'); ?></p>
-            </div>
-            <div class="tn-lov-badges" aria-label="<?php esc_attr_e('Plugin capabilities', 'tn-lov'); ?>">
-                <span><?php esc_html_e('ACF-free', 'tn-lov'); ?></span>
-                <span><?php esc_html_e('WPML-ready', 'tn-lov'); ?></span>
-                <span><?php esc_html_e('Multisite-ready', 'tn-lov'); ?></span>
-            </div>
-        </header>
+        <h1 class="screen-reader-text"><?php esc_html_e('TN LOV', 'tn-lov'); ?></h1>
 
         <?php if (null !== $saved_count) : ?>
             <div class="notice notice-success is-dismissible tn-lov-notice"><p>
@@ -99,7 +93,34 @@ function tn_lov_render_admin_page(): void {
             <div class="notice notice-error is-dismissible tn-lov-notice"><p><?php esc_html_e('No legacy LOV index was available to import.', 'tn-lov'); ?></p></div>
         <?php endif; ?>
 
-        <section class="tn-lov-migration tn-lov-migration--<?php echo esc_attr($migration_status); ?>" aria-labelledby="tn-lov-migration-title">
+        <header class="tn-lov-hero">
+            <div>
+                <p class="tn-lov-eyebrow"><?php esc_html_e('Native WordPress settings', 'tn-lov'); ?></p>
+                <p class="tn-lov-hero__title" aria-hidden="true"><?php esc_html_e('TN LOV', 'tn-lov'); ?></p>
+                <p class="tn-lov-lead">
+                    <?php
+                    echo $wpml_active
+                        ? esc_html__('A dependable home for reusable site values—native, lightweight, and language-aware.', 'tn-lov')
+                        : esc_html__('A dependable home for reusable site values—native and lightweight.', 'tn-lov');
+                    ?>
+                </p>
+            </div>
+            <div class="tn-lov-badges" aria-label="<?php esc_attr_e('Plugin capabilities', 'tn-lov'); ?>">
+                <span><?php esc_html_e('ACF-free', 'tn-lov'); ?></span>
+                <?php if ($wpml_active) : ?>
+                    <span><?php esc_html_e('WPML-ready', 'tn-lov'); ?></span>
+                <?php endif; ?>
+                <span><?php esc_html_e('Multisite-ready', 'tn-lov'); ?></span>
+            </div>
+        </header>
+
+        <?php if ($show_migration) : ?>
+        <section class="tn-lov-migration tn-lov-migration--<?php echo esc_attr($migration_status); ?>" aria-labelledby="tn-lov-migration-title" data-migration-status="<?php echo esc_attr($migration_status); ?>">
+            <button type="button" class="tn-lov-migration__dismiss" aria-label="<?php esc_attr_e('Dismiss migration status', 'tn-lov'); ?>">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M6 6l12 12M18 6 6 18"></path>
+                </svg>
+            </button>
             <div class="tn-lov-migration__summary">
                 <span class="dashicons <?php echo 'matched' === $migration_status ? 'dashicons-yes-alt' : 'dashicons-database'; ?>" aria-hidden="true"></span>
                 <div>
@@ -116,10 +137,12 @@ function tn_lov_render_admin_page(): void {
                 </div>
             </div>
 
-            <div class="tn-lov-migration__metrics">
+            <div class="tn-lov-migration__metrics<?php echo $wpml_active ? '' : ' tn-lov-migration__metrics--two'; ?>">
                 <div><strong><?php echo esc_html(number_format_i18n($legacy_count)); ?></strong><span><?php esc_html_e('Legacy values', 'tn-lov'); ?></span></div>
                 <div><strong><?php echo esc_html(number_format_i18n($native_count)); ?></strong><span><?php esc_html_e('TN LOV values', 'tn-lov'); ?></span></div>
-                <div><strong><?php echo esc_html(number_format_i18n($legacy_languages)); ?></strong><span><?php esc_html_e('Languages found', 'tn-lov'); ?></span></div>
+                <?php if ($wpml_active) : ?>
+                    <div><strong><?php echo esc_html(number_format_i18n($legacy_languages)); ?></strong><span><?php esc_html_e('Languages found', 'tn-lov'); ?></span></div>
+                <?php endif; ?>
             </div>
 
             <?php if (is_array($legacy_index) && $legacy_count > 0) : ?>
@@ -136,8 +159,9 @@ function tn_lov_render_admin_page(): void {
                 </form>
             <?php endif; ?>
         </section>
+        <?php endif; ?>
 
-        <?php if (tn_lov_is_wpml_active()) : ?>
+        <?php if ($wpml_active) : ?>
             <div class="tn-lov-language">
                 <span class="dashicons dashicons-translation" aria-hidden="true"></span>
                 <span><?php esc_html_e('Editing language', 'tn-lov'); ?></span>
@@ -159,11 +183,19 @@ function tn_lov_render_admin_page(): void {
                 </div>
                 <span class="tn-lov-count">
                     <?php
-                    printf(
-                        /* translators: %s: Number of values in the current language. */
-                        esc_html__('%s in this language', 'tn-lov'),
-                        esc_html(number_format_i18n(count($values)))
-                    );
+                    if ($wpml_active) {
+                        printf(
+                            /* translators: %s: Number of values in the current language. */
+                            esc_html__('%s in this language', 'tn-lov'),
+                            esc_html(number_format_i18n(count($values)))
+                        );
+                    } else {
+                        printf(
+                            /* translators: %s: Number of values. */
+                            esc_html(_n('%s value', '%s values', count($values), 'tn-lov')),
+                            esc_html(number_format_i18n(count($values)))
+                        );
+                    }
                     ?>
                 </span>
             </div>
@@ -332,6 +364,24 @@ function tn_lov_import_legacy_values(): void {
 
     wp_safe_redirect(add_query_arg($redirect_args, admin_url('options-general.php')));
     exit;
+}
+
+function tn_lov_dismiss_migration(): void {
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(array('message' => __('You are not allowed to dismiss this status.', 'tn-lov')), 403);
+    }
+
+    check_ajax_referer('tn_lov_dismiss_migration', 'nonce');
+
+    $status = isset($_POST['status']) ? sanitize_key(wp_unslash($_POST['status'])) : '';
+    $allowed_statuses = array('unavailable', 'matched', 'pending', 'different');
+
+    if (!in_array($status, $allowed_statuses, true)) {
+        wp_send_json_error(array('message' => __('The migration status was invalid.', 'tn-lov')), 400);
+    }
+
+    update_user_meta(get_current_user_id(), 'tn_lov_dismissed_migration_status', $status);
+    wp_send_json_success();
 }
 
 /**

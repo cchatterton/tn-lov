@@ -3,7 +3,7 @@ Contributors: techn
 Tags: settings, options, values, wpml
 Requires at least: 6.0
 Tested up to: 7.1
-Stable tag: 2.0.5
+Stable tag: 2.0.6
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -54,6 +54,14 @@ No. The legacy import only runs when TN LOV's own data option does not exist.
 
 == Changelog ==
 
+= 2.0.6 =
+
+* Moved WordPress and third-party notices above the branded header.
+* Added persistent per-user dismissal of the migration status panel.
+* Restores the panel automatically when its migration status changes.
+* Hides language-specific interface elements unless WPML is active on the current site.
+* Simplified the branded header eyebrow.
+
 = 2.0.5 =
 
 * Restored the developer reference to the bottom of the TN LOV screen and removed the Help tabs.
@@ -91,6 +99,10 @@ No. The legacy import only runs when TN LOV's own data option does not exist.
 * Added WordPress-native updates from GitHub releases.
 
 == Upgrade Notice ==
+
+= 2.0.6 =
+
+Keeps admin notices outside the TN LOV header and lets each administrator dismiss the migration panel.
 
 = 2.0.5 =
 

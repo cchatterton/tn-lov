@@ -2,6 +2,14 @@
 
 All notable changes to TN LOV are recorded here.
 
+## 2.0.6 - 2026-09-04
+
+- Moved WordPress and third-party admin notices above the branded TN LOV header.
+- Added a persistent per-user dismissal control to the migration status panel.
+- Makes the migration panel visible again automatically when its status changes.
+- Removed the Techn wordmark from the header eyebrow.
+- Hides WPML badges, metrics, and language wording when WPML is not active on the current site.
+
 ## 2.0.5 - 2026-09-04
 
 - Restored the developer reference to the bottom of the TN LOV screen and removed the contextual Help tabs.

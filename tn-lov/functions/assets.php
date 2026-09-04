@@ -28,4 +28,12 @@ function tn_lov_enqueue_admin_assets(string $hook_suffix): void {
         true
     );
 
+    wp_localize_script(
+        'tn-lov-admin',
+        'TN_LOV_ADMIN',
+        array(
+            'ajaxUrl'      => admin_url('admin-ajax.php'),
+            'dismissNonce' => wp_create_nonce('tn_lov_dismiss_migration'),
+        )
+    );
 }

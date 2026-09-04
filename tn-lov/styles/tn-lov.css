@@ -33,10 +33,11 @@
     box-shadow: 0 0.75rem 2rem rgba(0, 40, 64, 0.2);
 }
 
-.tn-lov-hero h1 {
+.tn-lov-hero__title {
     margin-bottom: 0.5rem;
     color: #ffffff;
     font-size: 2.25rem;
+    font-weight: 400;
     line-height: 1.1;
 }
 
@@ -96,11 +97,49 @@
 }
 
 .tn-lov-migration {
+    position: relative;
     display: grid;
     grid-template-columns: minmax(18rem, 1.4fr) minmax(22rem, 1fr);
     gap: 1.5rem 2rem;
-    padding: 1.5rem;
+    padding: 1.5rem 4rem 1.5rem 1.5rem;
     border-left: 0.3rem solid var(--tn-lov-brand);
+}
+
+.tn-lov-migration__dismiss {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    color: var(--tn-lov-muted);
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+}
+
+.tn-lov-migration__dismiss:hover,
+.tn-lov-migration__dismiss:focus {
+    color: #ffffff;
+    background: var(--tn-lov-brand-dark);
+}
+
+.tn-lov-migration__dismiss:focus-visible {
+    outline: 0.125rem solid var(--tn-lov-brand);
+    outline-offset: 0.125rem;
+}
+
+.tn-lov-migration__dismiss svg {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
 }
 
 .tn-lov-migration--matched {
@@ -152,6 +191,10 @@
     border: 0.0625rem solid var(--tn-lov-border);
     border-radius: 0.625rem;
     background: var(--tn-lov-soft);
+}
+
+.tn-lov-migration__metrics--two {
+    grid-template-columns: repeat(2, 1fr);
 }
 
 .tn-lov-migration__metrics div {
@@ -438,7 +481,7 @@
         padding: 1.5rem;
     }
 
-    .tn-lov-hero h1 {
+    .tn-lov-hero__title {
         font-size: 1.8rem;
     }
 
