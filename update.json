@@ -1,4 +1,4 @@
 {
-  "version": "2.0.3",
-  "body": "Repairs empty migrations from earlier releases, adds visible legacy-versus-native migration verification and manual re-import, and introduces a polished TN LOV administration experience."
+  "version": "2.0.4",
+  "body": "Adds contextual Help and a secure live lookup, plus direct ACF repeater migration for sites where the legacy normalized index was never created."
 }

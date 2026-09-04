@@ -2,7 +2,7 @@
 
 Author: Techn
 
-Version: 2.0.3
+Version: 2.0.4
 
 Status: Production
 
@@ -22,6 +22,8 @@ On multisite, network activation processes sites in batches and performs the sam
 
 TN LOV 2.0.3 automatically repairs an empty native index left by an earlier migration attempt when legacy values are available. Settings > TN LOV shows legacy and native totals, the number of languages detected, and whether both indexes match exactly. Administrators can also perform a fresh nonce-protected import from the legacy index; this replaces TN LOV data but never changes the legacy source.
 
+If the legacy plugin never created its normalized `lov_index`, TN LOV reads and normalizes the original ACF repeater directly. With WPML active, it switches through the available languages and restores the original language after collection.
+
 ## Public API
 
 ```php
@@ -35,6 +37,8 @@ Prefixed equivalents are also available:
 $value = tn_lov_get('copyright_message');
 $values = tn_lov_get_group('default_css');
 ```
+
+The contextual Help drawer on Settings > TN LOV includes the complete function reference and a secure live lookup for testing TN LOV keys while the legacy plugin remains active.
 
 ## Storage
 

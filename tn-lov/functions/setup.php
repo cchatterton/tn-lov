@@ -61,7 +61,8 @@ function tn_lov_clone_legacy_values_for_current_site(): void {
         return;
     }
 
-    $legacy_index = get_option('lov_index', array());
+    $legacy_source = tn_lov_get_legacy_source_for_current_site();
+    $legacy_index = $legacy_source['index'];
     update_option('tn_lov_index', is_array($legacy_index) ? $legacy_index : array(), false);
     update_option('tn_lov_migration_version', TN_LOV_MIGRATION_VERSION, false);
 }
@@ -85,7 +86,8 @@ function tn_lov_maybe_repair_legacy_migration(): void {
 }
 
 function tn_lov_repair_empty_legacy_migration_for_current_site(): bool {
-    $legacy_index = get_option('lov_index', false);
+    $legacy_source = tn_lov_get_legacy_source_for_current_site();
+    $legacy_index = $legacy_source['index'];
     $native_index = get_option('tn_lov_index', false);
     $repaired = false;
 
@@ -101,6 +103,117 @@ function tn_lov_repair_empty_legacy_migration_for_current_site(): bool {
     update_option('tn_lov_migration_version', TN_LOV_MIGRATION_VERSION, false);
 
     return $repaired;
+}
+
+/**
+ * Return normalized legacy values from the old index or directly from ACF.
+ *
+ * @return array{index: array<mixed>|false, type: string}
+ */
+function tn_lov_get_legacy_source_for_current_site(): array {
+    $legacy_index = get_option('lov_index', false);
+    if (is_array($legacy_index) && tn_lov_count_index_values($legacy_index) > 0) {
+        return array(
+            'index' => $legacy_index,
+            'type'  => 'index',
+        );
+    }
+
+    $acf_index = tn_lov_read_legacy_acf_index();
+    if (tn_lov_count_index_values($acf_index) > 0) {
+        return array(
+            'index' => $acf_index,
+            'type'  => 'acf',
+        );
+    }
+
+    return array(
+        'index' => is_array($legacy_index) ? $legacy_index : false,
+        'type'  => 'none',
+    );
+}
+
+/**
+ * Read the legacy ACF repeater directly when its normalized index is missing.
+ *
+ * @return array<string, array<string, array<string, string>>>
+ */
+function tn_lov_read_legacy_acf_index(): array {
+    if (!function_exists('get_field')) {
+        return array();
+    }
+
+    $languages = array('default');
+    $original_language = 'default';
+
+    if (tn_lov_is_wpml_active()) {
+        $original_language = tn_lov_current_language();
+        $languages = array($original_language, tn_lov_default_language());
+        $active_languages = apply_filters(
+            'wpml_active_languages',
+            null,
+            array('skip_missing' => 0)
+        );
+
+        if (is_array($active_languages)) {
+            $languages = array_merge($languages, array_keys($active_languages));
+        }
+
+        $languages = array_values(array_unique(array_filter(array_map('sanitize_key', $languages))));
+    }
+
+    $index = array();
+
+    try {
+        foreach ($languages as $language) {
+            if (tn_lov_is_wpml_active()) {
+                do_action('wpml_switch_language', $language);
+            }
+
+            $rows = get_field('lov', 'options');
+            $values = tn_lov_normalize_legacy_acf_rows($rows);
+            if (!empty($values)) {
+                $index[$language] = $values;
+            }
+        }
+    } finally {
+        if (tn_lov_is_wpml_active()) {
+            do_action('wpml_switch_language', $original_language);
+        }
+    }
+
+    return $index;
+}
+
+/**
+ * @param mixed $rows ACF repeater rows.
+ * @return array<string, array<string, string>>
+ */
+function tn_lov_normalize_legacy_acf_rows($rows): array {
+    if (!is_array($rows)) {
+        return array();
+    }
+
+    $values = array();
+
+    foreach ($rows as $row) {
+        if (!is_array($row)) {
+            continue;
+        }
+
+        $key = isset($row['key']) ? sanitize_text_field((string) $row['key']) : '';
+        if ('' === $key) {
+            continue;
+        }
+
+        $values[$key] = array(
+            'value' => isset($row['value']) ? sanitize_text_field((string) $row['value']) : '',
+            'group' => isset($row['group']) ? sanitize_text_field((string) $row['group']) : '',
+            'notes' => isset($row['notes']) ? sanitize_text_field((string) $row['notes']) : '',
+        );
+    }
+
+    return $values;
 }
 
 /**

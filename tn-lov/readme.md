@@ -17,4 +17,8 @@ On multisite, network activation clones each existing site's data. Any site that
 
 The native screen shows whether the legacy and TN LOV indexes match, their record and language totals, and a protected action to import the legacy index again when required.
 
+If the legacy normalized index is missing, TN LOV reads the ACF repeater directly and collects its available WPML languages.
+
+Use the Help drawer on the TN LOV screen for function examples and a live key lookup against native TN LOV data.
+
 See the repository README for public API and release details.

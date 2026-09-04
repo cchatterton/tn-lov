@@ -2,6 +2,14 @@
 
 All notable changes to TN LOV are recorded here.
 
+## 2.0.4 - 2026-09-04
+
+- Moved the public API reference from the page footer into a contextual WordPress Help tab.
+- Added a live Help lookup for testing exact keys against TN LOV's native index.
+- Protected lookup requests with administrator capability checks, a nonce, and sanitised input.
+- Added direct ACF repeater migration when the legacy normalized index was never created.
+- Re-runs the safe empty-index repair for sites that previously reported no legacy source.
+
 ## 2.0.3 - 2026-09-04
 
 - Added a self-healing migration that repairs empty TN LOV indexes left by earlier activation attempts.

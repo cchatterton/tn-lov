@@ -86,8 +86,7 @@
 }
 
 .tn-lov-migration,
-.tn-lov-editor,
-.tn-lov-functions {
+.tn-lov-editor {
     margin-bottom: 1.25rem;
     border: 0.0625rem solid var(--tn-lov-border);
     border-radius: 0.75rem;
@@ -132,8 +131,7 @@
 }
 
 .tn-lov-migration__summary h2,
-.tn-lov-editor__header h2,
-.tn-lov-functions h2 {
+.tn-lov-editor__header h2 {
     margin-bottom: 0.35rem;
     color: var(--tn-lov-ink);
     font-size: 1.25rem;
@@ -350,32 +348,55 @@
     background: var(--tn-lov-brand-dark);
 }
 
-.tn-lov-functions {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.25rem 1.5rem;
-}
-
-.tn-lov-functions > div {
-    margin-right: auto;
-}
-
-.tn-lov-functions code {
-    padding: 0.65rem 0.8rem;
-    color: #dfffb2;
-    border-radius: 0.4rem;
-    background: var(--tn-lov-ink);
-    font-size: 0.8rem;
-}
-
 #tn-lov-row-template {
     display: none;
 }
 
+.tn-lov-help-lookup {
+    max-width: 42rem;
+}
+
+.tn-lov-help-lookup__controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.tn-lov-help-lookup__controls input {
+    min-height: 2.25rem;
+}
+
+.tn-lov-help-result {
+    display: none;
+    margin: 0.75rem 0;
+    padding: 0.75rem;
+    overflow-wrap: anywhere;
+    border: 0.0625rem solid #d7e1df;
+    border-radius: 0.375rem;
+    background: #f3f7f6;
+    font-family: Consolas, Monaco, monospace;
+}
+
+.tn-lov-help-result.is-success,
+.tn-lov-help-result.is-error {
+    display: block;
+}
+
+.tn-lov-help-result.is-success {
+    color: #004c46;
+    border-color: #77bda5;
+    background: #edf8f4;
+}
+
+.tn-lov-help-result.is-error {
+    color: #8a2424;
+    border-color: #d9a1a1;
+    background: #fcf0f0;
+}
+
 @media screen and (max-width: 65rem) {
-    .tn-lov-hero,
-    .tn-lov-functions {
+    .tn-lov-hero {
         align-items: flex-start;
         flex-direction: column;
     }
@@ -392,6 +413,18 @@
         grid-column: auto;
         align-items: flex-start;
         flex-direction: column;
+    }
+}
+
+@media screen and (max-width: 40rem) {
+    .tn-lov-help-lookup__controls {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .tn-lov-help-lookup__controls input,
+    .tn-lov-help-lookup__controls .button {
+        width: 100%;
     }
 }
 
