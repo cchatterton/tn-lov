@@ -2,6 +2,13 @@
 
 All notable changes to TN LOV are recorded here.
 
+## 2.0.5 - 2026-09-04
+
+- Restored the developer reference to the bottom of the TN LOV screen and removed the contextual Help tabs.
+- Aligned the Add value and Re-import legacy values icons with their button labels.
+- Updated the administration screen to the Techn navy-and-orange brand palette.
+- Renamed the Settings menu item to "List of Value (LOV)".
+
 ## 2.0.4 - 2026-09-04
 
 - Moved the public API reference from the page footer into a contextual WordPress Help tab.

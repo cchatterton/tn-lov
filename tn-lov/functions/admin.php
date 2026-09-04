@@ -10,57 +10,14 @@ if (!defined('ABSPATH')) {
 add_action('admin_menu', 'tn_lov_register_admin_page');
 add_action('admin_post_tn_lov_save_values', 'tn_lov_save_values');
 add_action('admin_post_tn_lov_import_legacy', 'tn_lov_import_legacy_values');
-add_action('wp_ajax_tn_lov_get_value', 'tn_lov_ajax_get_value');
 
 function tn_lov_register_admin_page(): void {
-    $hook_suffix = add_options_page(
+    add_options_page(
         __('List of Values', 'tn-lov'),
-        __('TN LOV', 'tn-lov'),
+        __('List of Value (LOV)', 'tn-lov'),
         'manage_options',
         'tn-lov',
         'tn_lov_render_admin_page'
-    );
-
-    add_action('load-' . $hook_suffix, 'tn_lov_register_help_tabs');
-}
-
-function tn_lov_register_help_tabs(): void {
-    $screen = get_current_screen();
-    if (!$screen || 'settings_page_tn-lov' !== $screen->id) {
-        return;
-    }
-
-    $screen->add_help_tab(
-        array(
-            'id'      => 'tn_lov_functions',
-            'title'   => __('LOV Functions', 'tn-lov'),
-            'content' => '<p>' . esc_html__('Retrieve individual values or complete groups in theme and plugin code.', 'tn-lov') . '</p>'
-                . '<ul>'
-                . '<li><code>$value = get_lov(\'$key\');</code></li>'
-                . '<li><code>$values = get_lov_group(\'$group\');</code></li>'
-                . '<li><code>$value = tn_lov_get(\'$key\');</code></li>'
-                . '<li><code>$values = tn_lov_get_group(\'$group\');</code></li>'
-                . '</ul>'
-                . '<p>' . esc_html__('Lookups use the current WPML language and fall back to the WPML default language.', 'tn-lov') . '</p>',
-        )
-    );
-
-    $screen->add_help_tab(
-        array(
-            'id'      => 'tn_lov_lookup',
-            'title'   => __('LOV Lookup', 'tn-lov'),
-            'content' => '<div class="tn-lov-help-lookup">'
-                . '<p><strong>' . esc_html__('Look up a TN LOV value', 'tn-lov') . '</strong></p>'
-                . '<p>' . esc_html__('Enter an exact key to test the current TN LOV index.', 'tn-lov') . '</p>'
-                . '<div class="tn-lov-help-lookup__controls">'
-                . '<label class="screen-reader-text" for="tn-lov-help-input">' . esc_html__('LOV key', 'tn-lov') . '</label>'
-                . '<input type="text" id="tn-lov-help-input" class="regular-text" placeholder="' . esc_attr__('e.g. copyright_message', 'tn-lov') . '">'
-                . '<button type="button" class="button button-primary" id="tn-lov-help-get">' . esc_html__('Get value', 'tn-lov') . '</button>'
-                . '</div>'
-                . '<div class="tn-lov-help-result" id="tn-lov-help-result" role="status" aria-live="polite"></div>'
-                . '<p class="description">' . esc_html__('This checks TN LOV directly, even while the legacy plugin still provides get_lov().', 'tn-lov') . '</p>'
-                . '</div>',
-        )
     );
 }
 
@@ -170,7 +127,9 @@ function tn_lov_render_admin_page(): void {
                     <input type="hidden" name="action" value="tn_lov_import_legacy">
                     <?php wp_nonce_field('tn_lov_import_legacy', 'tn_lov_import_nonce'); ?>
                     <button type="submit" class="button button-secondary">
-                        <span class="dashicons dashicons-migrate" aria-hidden="true"></span>
+                        <svg class="tn-lov-button-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M12 3v10m0 0 4-4m-4 4-4-4M5 16v4h14v-4"></path>
+                        </svg>
                         <?php echo $indexes_match ? esc_html__('Re-import legacy values', 'tn-lov') : esc_html__('Import legacy values now', 'tn-lov'); ?>
                     </button>
                     <p><?php esc_html_e('This copies every language and replaces the current TN LOV index. The legacy index is never changed.', 'tn-lov'); ?></p>
@@ -239,12 +198,26 @@ function tn_lov_render_admin_page(): void {
 
             <div class="tn-lov-editor__footer">
                 <button type="button" class="button button-secondary" id="tn-lov-add-row">
-                    <span class="dashicons dashicons-plus-alt2" aria-hidden="true"></span>
+                    <svg class="tn-lov-button-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M12 5v14M5 12h14"></path>
+                    </svg>
                     <?php esc_html_e('Add value', 'tn-lov'); ?>
                 </button>
                 <?php submit_button(__('Save values', 'tn-lov'), 'primary', 'submit', false); ?>
             </div>
         </form>
+
+        <section class="tn-lov-functions" aria-labelledby="tn-lov-functions-title">
+            <div>
+                <p class="tn-lov-kicker"><?php esc_html_e('Developer reference', 'tn-lov'); ?></p>
+                <h2 id="tn-lov-functions-title"><?php esc_html_e('Use values in code', 'tn-lov'); ?></h2>
+                <p><?php esc_html_e('Lookups use the current WPML language and fall back to the default language.', 'tn-lov'); ?></p>
+            </div>
+            <div class="tn-lov-functions__examples">
+                <code>get_lov('$key')</code>
+                <code>get_lov_group('$group')</code>
+            </div>
+        </section>
 
         <script type="text/template" id="tn-lov-row-template">
             <?php tn_lov_render_row('__INDEX__', '', array()); ?>
@@ -359,26 +332,6 @@ function tn_lov_import_legacy_values(): void {
 
     wp_safe_redirect(add_query_arg($redirect_args, admin_url('options-general.php')));
     exit;
-}
-
-function tn_lov_ajax_get_value(): void {
-    if (!current_user_can('manage_options')) {
-        wp_send_json_error(array('message' => __('You are not allowed to look up these values.', 'tn-lov')), 403);
-    }
-
-    check_ajax_referer('tn_lov_lookup', 'nonce');
-
-    $key = isset($_POST['key']) ? sanitize_text_field(wp_unslash($_POST['key'])) : '';
-    if ('' === $key) {
-        wp_send_json_error(array('message' => __('Enter a key to look up.', 'tn-lov')), 400);
-    }
-
-    $value = tn_lov_get($key);
-    if (null === $value) {
-        wp_send_json_error(array('message' => __('No matching TN LOV value was found.', 'tn-lov')), 404);
-    }
-
-    wp_send_json_success(array('value' => $value));
 }
 
 /**

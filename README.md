@@ -2,7 +2,7 @@
 
 Author: Techn
 
-Version: 2.0.4
+Version: 2.0.5
 
 Status: Production
 
@@ -38,7 +38,7 @@ $value = tn_lov_get('copyright_message');
 $values = tn_lov_get_group('default_css');
 ```
 
-The contextual Help drawer on Settings > TN LOV includes the complete function reference and a secure live lookup for testing TN LOV keys while the legacy plugin remains active.
+The Settings > TN LOV screen includes a developer reference at the bottom with the supported public lookup functions.
 
 ## Storage
 

@@ -3,7 +3,7 @@ Contributors: techn
 Tags: settings, options, values, wpml
 Requires at least: 6.0
 Tested up to: 7.1
-Stable tag: 2.0.4
+Stable tag: 2.0.5
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -24,7 +24,7 @@ The TN LOV screen visibly compares legacy and native record totals, language tot
 
 When the old normalized index is absent, TN LOV imports directly from the ACF repeater and collects available WPML languages before restoring the original language.
 
-Open the WordPress Help drawer on the TN LOV screen for the public function reference and a secure live key lookup against TN LOV's native index.
+The TN LOV screen includes a developer reference at the bottom with the supported public lookup functions.
 
 When WPML is active, values are managed for the current language and lookups fall back to the WPML default language.
 
@@ -53,6 +53,13 @@ Yes. TN LOV checks whether each legacy global function already exists and does n
 No. The legacy import only runs when TN LOV's own data option does not exist.
 
 == Changelog ==
+
+= 2.0.5 =
+
+* Restored the developer reference to the bottom of the TN LOV screen and removed the Help tabs.
+* Aligned action icons with their button labels.
+* Updated the administration screen to the Techn navy-and-orange brand palette.
+* Renamed the Settings menu item to "List of Value (LOV)".
 
 = 2.0.4 =
 
@@ -84,6 +91,10 @@ No. The legacy import only runs when TN LOV's own data option does not exist.
 * Added WordPress-native updates from GitHub releases.
 
 == Upgrade Notice ==
+
+= 2.0.5 =
+
+Restores the on-page developer reference and applies Techn navy-and-orange branding.
 
 = 2.0.4 =
 

@@ -1,4 +1,4 @@
 {
-  "version": "2.0.4",
-  "body": "Adds contextual Help and a secure live lookup, plus direct ACF repeater migration for sites where the legacy normalized index was never created."
+  "version": "2.0.5",
+  "body": "Restores the developer reference footer, aligns action icons, adopts the Techn navy-and-orange administration palette, and renames the Settings menu item."
 }

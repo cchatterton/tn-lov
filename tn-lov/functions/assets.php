@@ -28,15 +28,4 @@ function tn_lov_enqueue_admin_assets(string $hook_suffix): void {
         true
     );
 
-    wp_localize_script(
-        'tn-lov-admin',
-        'TN_LOV_ADMIN',
-        array(
-            'ajaxUrl'     => admin_url('admin-ajax.php'),
-            'lookupNonce' => wp_create_nonce('tn_lov_lookup'),
-            'lookingUp'   => __('Looking up…', 'tn-lov'),
-            'emptyKey'    => __('Enter a key to look up.', 'tn-lov'),
-            'requestFail' => __('The lookup could not be completed.', 'tn-lov'),
-        )
-    );
 }
