@@ -3,7 +3,7 @@ Contributors: techn
 Tags: settings, options, values, wpml
 Requires at least: 6.0
 Tested up to: 7.1
-Stable tag: 2.0.7
+Stable tag: 2.0.8
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -57,6 +57,10 @@ Yes. TN LOV checks whether each legacy global function already exists and does n
 No. The legacy import only runs when TN LOV's own data option does not exist.
 
 == Changelog ==
+
+= 2.0.8 =
+
+* Reworked Developer Reference into a compact single row with the LOV tester centred.
 
 = 2.0.7 =
 
@@ -114,6 +118,10 @@ No. The legacy import only runs when TN LOV's own data option does not exist.
 * Added WordPress-native updates from GitHub releases.
 
 == Upgrade Notice ==
+
+= 2.0.8 =
+
+Keeps Developer Reference narrow by placing the LOV tester in the middle of one balanced row.
 
 = 2.0.7 =
 

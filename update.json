@@ -1,4 +1,4 @@
 {
-  "version": "2.0.7",
-  "body": "Prevents legacy get_lov() failures after ACF removal, standardises List of Values naming, and adds a secure native value tester to the developer reference."
+  "version": "2.0.8",
+  "body": "Refines Developer Reference into a compact single row with the native LOV tester centred between the description and code examples."
 }

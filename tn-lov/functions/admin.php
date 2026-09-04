@@ -241,29 +241,27 @@ function tn_lov_render_admin_page(): void {
         </form>
 
         <section class="tn-lov-functions" aria-labelledby="tn-lov-functions-title">
-            <div class="tn-lov-functions__header">
-                <div>
-                    <p class="tn-lov-kicker"><?php esc_html_e('Developer reference', 'tn-lov'); ?></p>
-                    <h2 id="tn-lov-functions-title"><?php esc_html_e('Use values in code', 'tn-lov'); ?></h2>
-                    <p>
-                        <?php
-                        echo $wpml_active
-                            ? esc_html__('Lookups use the current WPML language and fall back to the default language.', 'tn-lov')
-                            : esc_html__('Retrieve native values by key or group.', 'tn-lov');
-                        ?>
-                    </p>
-                </div>
-                <div class="tn-lov-functions__examples">
-                    <code>get_lov('$key')</code>
-                    <code>get_lov_group('$group')</code>
-                </div>
+            <div class="tn-lov-functions__intro">
+                <p class="tn-lov-kicker"><?php esc_html_e('Developer reference', 'tn-lov'); ?></p>
+                <h2 id="tn-lov-functions-title"><?php esc_html_e('Use values in code', 'tn-lov'); ?></h2>
+                <p>
+                    <?php
+                    echo $wpml_active
+                        ? esc_html__('Lookups use the current WPML language and fall back to the default language.', 'tn-lov')
+                        : esc_html__('Retrieve native values by key or group.', 'tn-lov');
+                    ?>
+                </p>
             </div>
             <div class="tn-lov-functions__test">
-                <label for="tn-lov-test-key"><?php esc_html_e('Test a LOV key', 'tn-lov'); ?></label>
+                <label class="screen-reader-text" for="tn-lov-test-key"><?php esc_html_e('Test a LOV key', 'tn-lov'); ?></label>
                 <div class="tn-lov-functions__test-controls">
-                    <input type="text" id="tn-lov-test-key" class="regular-text" placeholder="<?php esc_attr_e('e.g. copyright_message', 'tn-lov'); ?>">
-                    <button type="button" class="button" id="tn-lov-test-button"><?php esc_html_e('Test value', 'tn-lov'); ?></button>
+                    <input type="text" id="tn-lov-test-key" class="regular-text" placeholder="<?php esc_attr_e('Test a LOV key', 'tn-lov'); ?>">
+                    <button type="button" class="button" id="tn-lov-test-button"><?php esc_html_e('Test', 'tn-lov'); ?></button>
                 </div>
+            </div>
+            <div class="tn-lov-functions__examples">
+                <code>get_lov('$key')</code>
+                <code>get_lov_group('$group')</code>
             </div>
         </section>
 

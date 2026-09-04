@@ -2,6 +2,10 @@
 
 All notable changes to TN LOV are recorded here.
 
+## 2.0.8 - 2026-09-04
+
+- Reworked Developer Reference into a compact single row with the LOV tester centred between the description and code examples.
+
 ## 2.0.7 - 2026-09-04
 
 - Prevents the legacy ACF Lov Table `get_lov()` function from fatally calling a missing `get_field()` after ACF is removed first.

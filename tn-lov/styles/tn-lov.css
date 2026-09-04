@@ -418,14 +418,11 @@
 }
 
 .tn-lov-functions {
-    padding: 1.25rem 1.5rem;
-}
-
-.tn-lov-functions__header {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(16rem, 1fr) minmax(18rem, 0.85fr) auto;
     align-items: center;
-    justify-content: space-between;
     gap: 1.5rem;
+    padding: 0.9rem 1.5rem;
 }
 
 .tn-lov-functions h2 {
@@ -455,16 +452,7 @@
 }
 
 .tn-lov-functions__test {
-    margin-top: 1.25rem;
-    padding-top: 1.25rem;
-    border-top: 0.0625rem solid var(--tn-lov-border);
-}
-
-.tn-lov-functions__test label {
-    display: block;
-    margin-bottom: 0.45rem;
-    color: var(--tn-lov-ink);
-    font-weight: 600;
+    min-width: 0;
 }
 
 .tn-lov-functions__test-controls {
@@ -500,9 +488,13 @@
 
 @media screen and (max-width: 65rem) {
     .tn-lov-hero,
-    .tn-lov-functions__header {
+    .tn-lov-functions {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .tn-lov-functions {
+        grid-template-columns: 1fr;
     }
 
     .tn-lov-badges {
